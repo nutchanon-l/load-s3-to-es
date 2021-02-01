@@ -1,0 +1,14 @@
+# cluster info
+GET _cluster/health
+GET _cluster/settings?flat_settings
+GET _cat/nodes?v&s=name
+GET _cat/allocation?v
+
+# indices info
+GET _cat/indices?v&s=index
+GET _cat/templates?v&s=name
+
+# index info
+GET target-index-test/_search
+GET target-index-test/_settings
+GET target-index-test/_mapping

@@ -1,0 +1,10 @@
+{
+    "index": {
+        "es_index_as_filename": false,
+        "es_index_name": "target-index-test"
+    },
+    "data": {
+        "headers": ["id", "text", "value", "timestamp"],
+        "id_field": "id"
+    }
+}

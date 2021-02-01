@@ -119,6 +119,8 @@ def bulk_es(es_conn, data: dict):
         print("Number of processing documents: {}".format(len(data)))
         res = helpers.bulk(es_conn, data)
         print("Bulk write succeed: {} documents".format(res[0]))
+    except helpers.errors.BulkIndexError as be:
+        print("Bulk error: {}".format(str(be)))
     except Exception as e:
         print("Exception: {}".format(str(e)))
         traceback.print_exc()

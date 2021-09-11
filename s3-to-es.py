@@ -20,7 +20,10 @@ class S3Control:
         self.s3_client = boto3.client('s3')
         
     def list_data_objects(self) -> list:
-        response = self.s3_client.list_objects(Bucket=self.bucket, Prefix=self.prefix)
+        if self.prefix == "/":
+            response = self.s3_client.list_objects(Bucket=self.bucket)
+        else:
+            response = self.s3_client.list_objects(Bucket=self.bucket, Prefix=self.prefix)
         objects = []
         for key in response['Contents']:
             objects.append(key['Key'])
@@ -29,7 +32,7 @@ class S3Control:
     def read_csv_file(self, filename: str) -> csv.DictReader:
         csv_obj = self.s3_client.get_object(Bucket=self.bucket, Key=filename)
         body = csv_obj['Body']
-        csv_string = csv.DictReader(codecs.getreader("utf-8")(body))
+        csv_string = csv.DictReader(codecs.getreader("utf-8-sig")(body))
         return csv_string
 
 class ESControl:
@@ -63,7 +66,7 @@ class Metadata:
         self.id_field = meta_conf['data']['id_field'] if meta_conf['data']['id_field'] != "" else None
         
     def set_index_name(self, name: str):
-        self.index = name
+        self.index = name.lower()
 
 def read_conf(conf_file: str) -> dict:
     with open(conf_file, "r") as f:
@@ -111,7 +114,7 @@ def bulk_write_to_es(es_conn, es_index: str, es_headers: list, es_id_field: str,
             
     # final batch size
     bulk_es(es_conn, actions)
-    print("INFO: Bulk write succeed: {} docuemnts".format(row_count))
+    print("INFO: Bulk write succeed: {} documents".format(row_count))
     
 def bulk_es(es_conn, data: dict):
     # bulk process
